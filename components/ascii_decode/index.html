@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th {
+      height: 35px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+    }
+
+    th:first-child {
+      width: 95px;
+    }
+
+    td {
+      border: 1px solid #888;
+      width: 55px;
+      height: 55px;
+      padding: 0;
+      text-align: center;
+    }
+
+    td.binary-label {
+      width: 95px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: right;
+      padding-right: 10px;
+    }
+
+    .pixel {
+      width: 55px;
+      height: 55px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .pixel.on {
+      background: black;
+    }
+
+    .answer-table {
+      border-collapse: separate;
+      border-spacing: 0 0;
+    }
+
+    .answer-table th {
+      text-align: center;
+    }
+
+    .answer-table td {
+      border: none;
+      width: 90px;
+      height: 55px;
+    }
+
+    .answer-table input {
+      width: 80px;
+      height: 38px;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .answer-table input.letter {
+      width: 55px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Binary grid -->
+  <table id="pixel-grid">
+
+    <thead>
+      <tr>
+        <th></th>
+        <th>128</th>
+        <th>64</th>
+        <th>32</th>
+        <th>16</th>
+        <th>8</th>
+        <th>4</th>
+        <th>2</th>
+        <th>1</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    </tbody>
+
+  </table>
+
+
+  <!-- Decimal and letter answers -->
+  <table class="answer-table">
+
+    <thead>
+      <tr>
+        <th>Decimal</th>
+        <th>Letter</th>
+      </tr>
+    </thead>
+
+    <tbody id="answers">
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<script>
+
+  const binaryValues = [
+    "01000100",
+    "01001111",
+    "01000111"
+  ];
+
+  const pixelGrid = document
+    .getElementById("pixel-grid")
+    .querySelector("tbody");
+
+  const answers = document
+    .getElementById("answers");
+
+  const pixels = [];
+  const decimalInputs = [];
+  const letterInputs = [];
+
+
+  // Create the three rows
+  for (let row = 0; row < 3; row++) {
+
+    const tr = document.createElement("tr");
+
+    const binaryCell = document.createElement("td");
+
+    binaryCell.className = "binary-label";
+    binaryCell.textContent = binaryValues[row];
+
+    tr.appendChild(binaryCell);
+
+    pixels[row] = [];
+
+    // Eight pixels
+    for (let col = 0; col < 8; col++) {
+
+      pixels[row][col] = 0;
+
+      const td = document.createElement("td");
+
+      const pixel = document.createElement("div");
+
+      pixel.className = "pixel";
+
+      pixel.addEventListener("click", function () {
+
+        pixels[row][col] =
+          pixels[row][col] === 0 ? 1 : 0;
+
+        pixel.classList.toggle(
+          "on",
+          pixels[row][col] === 1
+        );
+
+        sendValue();
+
+      });
+
+      td.appendChild(pixel);
+      tr.appendChild(td);
+    }
+
+    pixelGrid.appendChild(tr);
+
+
+    // Answer row
+    const answerRow = document.createElement("tr");
+
+    // Decimal input
+    const decimalCell = document.createElement("td");
+
+    const decimalInput = document.createElement("input");
+
+    decimalInput.type = "text";
+    decimalInput.maxLength = 2;
+    decimalInput.placeholder = "__";
+
+    decimalInput.addEventListener("input", sendValue);
+
+    decimalInputs.push(decimalInput);
+
+    decimalCell.appendChild(decimalInput);
+    answerRow.appendChild(decimalCell);
+
+
+    // Letter input
+    const letterCell = document.createElement("td");
+
+    const letterInput = document.createElement("input");
+
+    letterInput.type = "text";
+    letterInput.maxLength = 1;
+    letterInput.className = "letter";
+    letterInput.placeholder = "_";
+
+    letterInput.addEventListener("input", sendValue);
+
+    letterInputs.push(letterInput);
+
+    letterCell.appendChild(letterInput);
+    answerRow.appendChild(letterCell);
+
+    answers.appendChild(answerRow);
+
+  }
+
+
+  function sendValue() {
+
+    const value = {
+      pixels: pixels,
+
+      decimals: decimalInputs.map(
+        input => input.value.trim()
+      ),
+
+      letters: letterInputs.map(
+        input => input.value.trim()
+      )
+    };
+
+    window.parent.postMessage({
+      isStreamlitMessage: true,
+      type: "streamlit:setComponentValue",
+      value: value
+    }, "*");
+
+  }
+
+
+  function sendMessage(type, data = {}) {
+
+    window.parent.postMessage({
+      isStreamlitMessage: true,
+      type,
+      ...data
+    }, "*");
+
+  }
+
+
+  window.addEventListener("message", event => {
+
+    if (event.data.type === "streamlit:render") {
+
+      sendMessage(
+        "streamlit:setFrameHeight",
+        {
+          height: document.documentElement.scrollHeight
+        }
+      );
+
+    }
+
+  });
+
+
+  sendMessage(
+    "streamlit:componentReady",
+    {
+      apiVersion: 1
+    }
+  );
+
+
+  sendMessage(
+    "streamlit:setFrameHeight",
+    {
+      height: document.documentElement.scrollHeight
+    }
+  );
+
+
+  sendValue();
+
+</script>
+
+</body>
+</html>

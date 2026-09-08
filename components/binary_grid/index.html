@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th {
+      height: 35px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+    }
+
+    th:first-child {
+      width: 60px;
+    }
+
+    td {
+      border: 1px solid #888;
+      width: 55px;
+      height: 55px;
+      padding: 0;
+      text-align: center;
+    }
+
+    td.decimal {
+      width: 60px;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .pixel {
+      width: 55px;
+      height: 55px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .pixel.on {
+      background: black;
+    }
+
+    .binary-table {
+      border-collapse: separate;
+      border-spacing: 0 0;
+    }
+
+    .binary-table th {
+      text-align: left;
+      padding-left: 5px;
+    }
+
+    .binary-table td {
+      border: none;
+      width: 110px;
+      height: 55px;
+    }
+
+    .binary-table input {
+      width: 100px;
+      height: 38px;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Pixel grid -->
+  <table id="pixel-grid">
+
+    <thead>
+      <tr>
+        <th></th>
+        <th>32</th>
+        <th>16</th>
+        <th>8</th>
+        <th>4</th>
+        <th>2</th>
+        <th>1</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    </tbody>
+
+  </table>
+
+
+  <!-- Binary answers -->
+  <table class="binary-table">
+
+    <thead>
+      <tr>
+        <th>Binary</th>
+      </tr>
+    </thead>
+
+    <tbody id="binary-inputs">
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<script>
+
+  const decimalValues = [8, 56, 56, 30, 30, 18];
+
+  const pixelGrid = document
+    .getElementById("pixel-grid")
+    .querySelector("tbody");
+
+  const binaryInputs = document
+    .getElementById("binary-inputs");
+
+  const pixels = [];
+
+  const inputs = [];
+
+
+  // Create the six rows
+  for (let row = 0; row < 6; row++) {
+
+    const tr = document.createElement("tr");
+
+    const decimalCell = document.createElement("td");
+
+    decimalCell.className = "decimal";
+    decimalCell.textContent = decimalValues[row];
+
+    tr.appendChild(decimalCell);
+
+    pixels[row] = [];
+
+    // Six pixels
+    for (let col = 0; col < 6; col++) {
+
+      pixels[row][col] = 0;
+
+      const td = document.createElement("td");
+
+      const pixel = document.createElement("div");
+
+      pixel.className = "pixel";
+
+      pixel.addEventListener("click", function () {
+
+        pixels[row][col] =
+          pixels[row][col] === 0 ? 1 : 0;
+
+        pixel.classList.toggle(
+          "on",
+          pixels[row][col] === 1
+        );
+
+        sendValue();
+
+      });
+
+      td.appendChild(pixel);
+      tr.appendChild(td);
+    }
+
+    pixelGrid.appendChild(tr);
+
+
+    // Binary input
+    const binaryRow = document.createElement("tr");
+
+    const binaryCell = document.createElement("td");
+
+    const input = document.createElement("input");
+
+    input.type = "text";
+    input.maxLength = 6;
+    input.placeholder = "______";
+
+    input.addEventListener("input", sendValue);
+
+    inputs.push(input);
+
+    binaryCell.appendChild(input);
+    binaryRow.appendChild(binaryCell);
+
+    binaryInputs.appendChild(binaryRow);
+  }
+
+
+  function sendValue() {
+
+    const value = {
+      pixels: pixels,
+      binaries: inputs.map(
+        input => input.value.trim()
+      )
+    };
+
+    window.parent.postMessage({
+      isStreamlitMessage: true,
+      type: "streamlit:setComponentValue",
+      value: value
+    }, "*");
+
+  }
+
+
+  function sendMessage(type, data = {}) {
+
+    window.parent.postMessage({
+      isStreamlitMessage: true,
+      type,
+      ...data
+    }, "*");
+
+  }
+
+
+  window.addEventListener("message", event => {
+
+    if (event.data.type === "streamlit:render") {
+
+      sendMessage(
+        "streamlit:setFrameHeight",
+        {
+          height: document.documentElement.scrollHeight
+        }
+      );
+
+    }
+
+  });
+
+
+  sendMessage(
+    "streamlit:componentReady",
+    {
+      apiVersion: 1
+    }
+  );
+
+
+  sendMessage(
+    "streamlit:setFrameHeight",
+    {
+      height: document.documentElement.scrollHeight
+    }
+  );
+
+
+  sendValue();
+
+</script>
+
+</body>
+</html>

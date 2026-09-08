@@ -1,0 +1,223 @@
+{
+  "title": "Final Exam",
+  "sections": [
+    {
+      "title": "PART I: Sudoku Puzzle (6pts)",
+      "instruction": "Solve the 4x4 and 6x6 Sudoku using the appropriate numbers.",
+      "items": [
+        {
+          "type": "sudoku",
+          "id": "q1",
+          "text": "1.",
+          "component": "sudoku",
+          "max_points": 2
+        },
+        {
+          "type": "sudoku",
+          "id": "q2",
+          "text": "2.",
+          "component": "sudoku2",
+          "max_points": 4
+        }
+      ]
+    },
+    {
+      "title": "PART II: Counting Combinations I (2pts)",
+      "instruction": "Given the blocks below, make the possible combinations and answer the following questions.",
+      "image": "images/blocks.png",
+      "items": [
+        {
+          "type": "tower_coloring",
+          "id": "q3",
+          "text": "3. Color the following tower of blocks with all possible combinations.",
+          "colors": ["Red", "Blue", "Yellow"],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q4",
+          "text": "4. How many three-block towers can you make out of them?",
+          "options": [
+            "5",
+            "6",
+            "8",
+            "12"
+          ],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q5",
+          "text": "5. If there is a restriction that you cannot put the yellow block at the top. How many towers can you make?",
+          "options": [
+            "2",
+            "4",
+            "6",
+            "8"
+          ],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q6",
+          "text": "6. If there is a restriction that you cannot put the red block and blue block at the top. How many towers can you make?",
+          "options": [
+            "2",
+            "4",
+            "6",
+            "8"
+          ],
+          "max_points": 0.5
+        }
+      ]
+    },
+    {
+      "title": "PART III: Counting Combinations II (2pts)",
+      "instruction": "Suppose that the five-character code has the following restrictions:\n- Numbers only\n- Cannot repeat characters",
+      "image": "images/5char.png",
+      "items": [
+        {
+          "type": "mcq",
+          "id": "q7",
+          "text": "7. What sets of characters can the code contain?",
+          "options": [
+            "a-z (lowercase letters)",
+            "0-9 (numbers)",
+            "A-Z (uppercase letters)",
+            "All of the above"
+          ],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q8",
+          "text": "8. How many possible numbers and letters are there for the first character of the code?",
+          "options": [
+            "52 possible letters and numbers",
+            "10 possible numbers",
+            "62 possible letters and numbers",
+            "9 possible numbers"
+          ],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q9",
+          "text": "9. How many possible numbers and letters are there for the fifth character of the code?",
+          "options": [
+            "52 possible letters and numbers",
+            "10 possible numbers",
+            "62 possible letters and numbers",
+            "6 possible numbers"
+          ],
+          "max_points": 0.5
+        },
+        {
+          "type": "mcq",
+          "id": "q10",
+          "text": "10. How many total password combinations are possible?",
+          "options": [
+            "44,261,653,680 possible combinations",
+            "380,204,032 possible combinations",
+            "100,000 possible combinations",
+            "30,240 possible combinations"
+          ],
+          "max_points": 0.5
+        }
+      ]
+    },
+    {
+      "title": "PART IV: Patterns in Mathematics (3pts)",
+      "instruction": "Given the two numbers, find the LCM (Lowest Common Multiple) using the Listing Method.",
+      "items": [
+        {
+          "type": "lcm",
+          "id": "q11",
+          "num1": 3,
+          "num2": 8,
+          "text": "11. Find the LCM of **3** and **8**.",
+          "max_points": 1
+        },
+        {
+          "type": "lcm",
+          "id": "q12",
+          "num1": 3,
+          "num2": 12,
+          "text": "12. Find the LCM of **3** and **12**.",
+          "max_points": 1
+        },
+        {
+          "type": "lcm",
+          "id": "q13",
+          "num1": 8,
+          "num2": 9,
+          "text": "13. Find the LCM of **8** and **9**.",
+          "max_points": 1
+        },
+        {
+          "type": "tree",
+          "id": "q14_15",
+          "text": "14 - 15. Find the Prime Factors of the following numbers.",
+          "component": "tree",
+          "max_points": 2
+        }
+      ]
+    },
+    {
+      "title": "Part V: Binary Number System (5pts)",
+      "instruction": "Convert between binary and decimal numbers using the following weights.",
+      "image": "images/weights.png",
+      "items": [
+        {
+          "id": "q16",
+          "type": "binary_conversion",
+          "text": "16. Convert the decimal number **9** into binary.",
+          "decimal": 9,
+          "direction": "decimal_to_binary",
+          "max_points": 1
+        },
+        {
+          "id": "q17",
+          "type": "binary_conversion",
+          "text": "17. Convert the binary number **101** into a decimal number.",
+          "binary": "101",
+          "direction": "binary_to_decimal",
+          "max_points": 1
+        },
+        {
+            "id": "q18",
+            "text": "18. Use the decimal values to color the pixels in the grid. Then write the corresponding binary numbers.",
+            "type": "binary_image",
+            "component": "binary_grid",
+            "values": [8, 56, 56, 30, 30, 18],
+            "max_points": 1
+        },
+        {
+          "type": "instruction",
+          "text": "Convert between words and binary using the ASCII chart below.",
+          "image": "images/ascii_chart.png"
+        },
+        {
+          "id": "q19",
+          "type": "ascii_encode",
+          "text": "19. Encode the word **\"PEN\"** into binary.",
+          "letters": ["P", "E", "N"],
+          "component": "ascii_encode",
+          "max_points": 1
+        },
+        {
+          "id": "q20",
+          "type": "ascii_decode",
+          "text": "20. Decode the following binary numbers into text.",
+          "binary": [
+            "01000100",
+            "01001111",
+            "01000111"
+          ],
+          "component": "ascii_decode",
+          "max_points": 1
+        }
+      ]
+    }
+  ]
+}
